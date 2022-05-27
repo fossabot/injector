@@ -17,13 +17,18 @@ namespace injector
     };
 
     template<class T, class Enable = void>
-    class ConstructorFactory
+    class ConstructorFactory : public ComponentFactory<T>
     {
+    public:
+        std::shared_ptr<T> build(Injector& injector) override
+        {
+            return nullptr;
+        }
     };
 
     // Specialization for constructors with no arguments
     template<class T>
-    class ConstructorFactory<T, typename std::enable_if_t<std::is_default_constructible_v<T>>> : public ComponentFactory<T>
+    class ConstructorFactory<T, typename std::enable_if_t<std::is_default_constructible_v<T> && !std::is_abstract_v<T>>> : public ComponentFactory<T>
     {
     public:
         std::shared_ptr<T> build(Injector& injector) override
@@ -34,7 +39,7 @@ namespace injector
 
     // Specialization for constructors up to 16 arguments
     template<class T>
-    class ConstructorFactory<T, typename std::enable_if_t<!std::is_default_constructible_v<T>>> : public ComponentFactory<T>
+    class ConstructorFactory<T, typename std::enable_if_t<!std::is_default_constructible_v<T> && !std::is_abstract_v<T>>> : public ComponentFactory<T>
     {
     public:
         std::shared_ptr<T> build(Injector& injector) override

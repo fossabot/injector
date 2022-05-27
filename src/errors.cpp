@@ -6,5 +6,4 @@ namespace injector
     {
         return "Failed to create component";
     }
-
 } // namespace injector

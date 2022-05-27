@@ -30,7 +30,7 @@ namespace injector
         {
         }
 
-        [[nodiscard]] std::shared_ptr<T> get(Injector& injector) override
+        std::shared_ptr<T> get(Injector& injector) override
         {
             return m_Storage->get(injector);
         }
@@ -48,7 +48,7 @@ namespace injector
         {
         }
 
-        [[nodiscard]] std::shared_ptr<Base> get(Injector& injector) override
+        std::shared_ptr<Base> get(Injector& injector) override
         {
             return std::static_pointer_cast<Base>(m_Storage->get(injector));
         }
