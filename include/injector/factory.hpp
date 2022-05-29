@@ -60,34 +60,33 @@ namespace injector
                 ConstructorArgumentResolver(injector),
                 ConstructorArgumentResolver(injector),
                 ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector)
-            );
+                ConstructorArgumentResolver(injector));
         }
 
     private:
-        template<class Arg1, class Arg2, class ... Args,
-            typename std::enable_if_t<std::is_constructible_v<T, Arg1, Arg2, Args...>, bool> = true>
-        std::shared_ptr<T> try_build(Arg1& arg1, Arg2& a2, Args&& ... args)
+        template<class Arg1, class Arg2, class... Args,
+                 typename std::enable_if_t<std::is_constructible_v<T, Arg1, Arg2, Args...>, bool> = true>
+        std::shared_ptr<T> try_build(Arg1& arg1, Arg2& a2, Args&&... args)
         {
             return std::make_shared<T>(arg1, a2, std::forward<Args>(args)...);
         }
 
-        template<class Arg1, class Arg2, class ... Args,
-            typename std::enable_if_t<!std::is_constructible_v<T, Arg1, Arg2, Args...>, bool> = true>
-        std::shared_ptr<T> try_build(Arg1& arg1, Arg2& arg2, Args&& ... args)
+        template<class Arg1, class Arg2, class... Args,
+                 typename std::enable_if_t<!std::is_constructible_v<T, Arg1, Arg2, Args...>, bool> = true>
+        std::shared_ptr<T> try_build(Arg1& arg1, Arg2& arg2, Args&&... args)
         {
             return try_build(arg2, std::forward<Args>(args)...);
         }
 
         template<class Arg,
-            typename std::enable_if_t<std::is_constructible_v<T, Arg>, bool> = true>
+                 typename std::enable_if_t<std::is_constructible_v<T, Arg>, bool> = true>
         std::shared_ptr<T> try_build(Arg& arg)
         {
             return std::make_shared<T>(arg);
         }
 
         template<class Arg,
-            typename std::enable_if_t<!std::is_constructible_v<T, Arg>, bool> = true>
+                 typename std::enable_if_t<!std::is_constructible_v<T, Arg>, bool> = true>
         std::shared_ptr<T> try_build(Arg& arg)
         {
             return nullptr;
@@ -103,10 +102,7 @@ namespace injector
             }
 
             template<class ConstructorArgument,
-                typename std::enable_if_t<
-                    !std::is_same_v<ConstructorArgument, T> &&
-                    !std::is_same_v<ConstructorArgument, ConstructorArgument&> &&
-                    !std::is_pointer_v<ConstructorArgument>, bool> = true>
+                     typename std::enable_if_t<!std::is_same_v<ConstructorArgument, T> && !std::is_same_v<ConstructorArgument, ConstructorArgument&> && !std::is_pointer_v<ConstructorArgument>, bool> = true>
             operator ConstructorArgument()
             {
                 return m_Injector->get<ConstructorArgument>();

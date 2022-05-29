@@ -1,8 +1,20 @@
+cmake_minimum_required(VERSION 3.15)
+
+project(injector-tests VERSION 1.0.0 LANGUAGES CXX)
+
+include(FetchContent)
+
+FetchContent_Declare(googletest URL https://github.com/google/googletest/archive/refs/tags/release-1.11.0.zip)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(googletest)
+
 include(GoogleTest)
 
-add_executable(injector-test
+add_executable(${PROJECT_NAME}
         injector_with_function.cpp)
 
-target_link_libraries(injector-test gtest gtest_main injector)
+target_link_libraries(${PROJECT_NAME} injector gtest gmock gtest_main)
 
-gtest_discover_tests(injector-test)
+gtest_discover_tests(${PROJECT_NAME})

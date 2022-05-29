@@ -6,8 +6,6 @@
 
 namespace injector
 {
-    class Injector;
-
     class IComponentProvider
     {
     public:
@@ -38,7 +36,7 @@ namespace injector
     private:
         std::unique_ptr<InstanceStorage<T>> m_Storage;
     };
-    
+
     template<class Base, class Derived>
     class CastingComponentProvider : public ComponentProviderBase<Base>
     {

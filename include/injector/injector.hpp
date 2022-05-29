@@ -197,7 +197,7 @@ namespace injector
     public:
         // get<T>
         template<class T,
-            typename std::enable_if_t<!is_vector_v<T> && !is_shared_v<T>, bool> = true>
+                 typename std::enable_if_t<!is_vector_v<T> && !is_shared_v<T>, bool> = true>
         std::shared_ptr<T> get()
         {
             auto value = get_unchecked<T>();
@@ -212,15 +212,23 @@ namespace injector
 
         // get<std::shared_ptr<T>>
         template<class T,
-            typename std::enable_if_t<!is_vector_v<T> && is_shared_v<T>, bool> = true>
+                 typename std::enable_if_t<!is_vector_v<T> && is_shared_v<T>, bool> = true>
         std::shared_ptr<typename T::element_type> get()
         {
             return get<typename T::element_type>();
         };
 
+        // get<const T&>
+        template<class T,
+                 typename std::enable_if_t<std::is_reference_v<T> && std::is_const_v<typename std::remove_reference<T>>, bool> = true>
+        std::shared_ptr<std::remove_reference<typename std::remove_const<T>>> get()
+        {
+            return get<std::remove_reference<typename std::remove_const<T>>>();
+        }
+
         // get<std::vector<T>>
         template<class T,
-            typename std::enable_if_t<is_vector_v<T> && !is_shared_v<T>, bool> = true>
+                 typename std::enable_if_t<is_vector_v<T> && !is_shared_v<typename T::value_type>, bool> = true>
         std::vector<std::shared_ptr<typename T::value_type>> get()
         {
             using instance_type = typename T::value_type;
@@ -242,6 +250,14 @@ namespace injector
             }
 
             return instances;
+        }
+
+        // get<std::vector<std::shared_ptr<T>>>
+        template<class T,
+            typename std::enable_if_t<is_vector_v<T> && is_shared_v<typename T::value_type>, bool> = true>
+        std::vector<typename T::value_type> get()
+        {
+            return get<std::vector<typename T::value_type::element_type>>();
         }
 
     public:

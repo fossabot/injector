@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include <injector/injector.hpp>
+
+using ::testing::SizeIs;
 
 class Base
 {
@@ -79,4 +82,18 @@ TEST(InjectorWithFunction, ObjectCreationThatReturnsNull) {
     injector.add<Base, Derived>(factory);
 
     ASSERT_THROW(injector.get<Base>(), injector::ComponentCreationException);
+}
+
+TEST(InjectorWithFunction, TryAddingExistingFactoryFunction) {
+    auto factory = [] {
+        return std::make_shared<Derived>();
+    };
+
+    injector::Injector injector;
+    injector.try_add<Base, Derived>(factory);
+    injector.try_add<Base, Derived>(factory);
+
+    auto registrations = injector.get<std::vector<std::shared_ptr<Base>>>();
+
+    ASSERT_THAT(registrations, SizeIs(1));
 }
