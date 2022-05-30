@@ -22,15 +22,6 @@ public:
     }
 };
 
-class Derived2 : public Base
-{
-public:
-    int foo() override
-    {
-        return 50;
-    }
-};
-
 TEST(InjectorWithFunction, CreatingDerivedObjectFromFunctionFactory) {
     int call_count = 0;
 
@@ -46,6 +37,7 @@ TEST(InjectorWithFunction, CreatingDerivedObjectFromFunctionFactory) {
     auto res2 = injector.get<Base>();
     auto res3 = injector.get<Base>();
 
+    EXPECT_EQ(res1->foo(), 20);
     EXPECT_NE(res1, res2);
     EXPECT_NE(res1, res3);
     EXPECT_NE(res2, res3);
@@ -67,6 +59,7 @@ TEST(InjectorWithFunction, CreatingDerivedObjectWithSingletonFunctionFactory) {
     auto res2 = injector.get<Base>();
     auto res3 = injector.get<Base>();
 
+    EXPECT_EQ(res1->foo(), 20);
     EXPECT_EQ(res1, res2);
     EXPECT_EQ(res1, res3);
     EXPECT_EQ(res2, res3);

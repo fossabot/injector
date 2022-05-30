@@ -6,6 +6,14 @@
 namespace injector
 {
     class Injector;
+}
+
+namespace injector::detail
+{
+    using injector::Injector;
+
+    template<class T>
+    class ConstructorArgumentResolver;
 
     template<class T>
     class ComponentFactory
@@ -45,22 +53,22 @@ namespace injector
         std::shared_ptr<T> build(Injector& injector) override
         {
             return try_build(
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector),
-                ConstructorArgumentResolver(injector));
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector),
+                ConstructorArgumentResolver<T>(injector));
         }
 
     private:
@@ -91,26 +99,6 @@ namespace injector
         {
             return nullptr;
         }
-
-    private:
-        class ConstructorArgumentResolver
-        {
-        public:
-            explicit ConstructorArgumentResolver(Injector& injector)
-                : m_Injector(&injector)
-            {
-            }
-
-            template<class ConstructorArgument,
-                     typename std::enable_if_t<!std::is_same_v<ConstructorArgument, T> && !std::is_same_v<ConstructorArgument, ConstructorArgument&> && !std::is_pointer_v<ConstructorArgument>, bool> = true>
-            operator ConstructorArgument()
-            {
-                return m_Injector->get<ConstructorArgument>();
-            }
-
-        private:
-            Injector* m_Injector;
-        };
     };
 
     template<class T>
@@ -148,4 +136,4 @@ namespace injector
     private:
         std::shared_ptr<T> m_Data;
     };
-} // namespace injector
+} // namespace injector::detail

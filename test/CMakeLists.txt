@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
+enable_testing()
+
 project(injector-tests VERSION 1.0.0 LANGUAGES CXX)
 
 include(FetchContent)
@@ -12,9 +14,10 @@ FetchContent_MakeAvailable(googletest)
 
 include(GoogleTest)
 
-add_executable(${PROJECT_NAME}
-        injector_with_function.cpp)
+add_executable(injector-tests
+        injector_with_function.cpp
+        injector_with_value.cpp)
 
-target_link_libraries(${PROJECT_NAME} injector gtest gmock gtest_main)
+target_link_libraries(injector-tests injector gtest gmock gtest_main)
 
-gtest_discover_tests(${PROJECT_NAME})
+gtest_discover_tests(injector-tests)

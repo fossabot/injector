@@ -1,13 +1,9 @@
 #pragma once
 
-#include <memory>
+#include "injector/detail/factory.hpp"
 
-#include "factory.hpp"
-
-namespace injector
+namespace injector::detail
 {
-    class Injector;
-
     template<class T>
     class InstanceStorage
     {
@@ -50,4 +46,4 @@ namespace injector
     private:
         std::shared_ptr<T> m_Instance;
     };
-} // namespace injector
+} // namespace injector::detail

@@ -1,10 +1,8 @@
 #pragma once
 
-#include <memory>
-
 #include "storage.hpp"
 
-namespace injector
+namespace injector::detail
 {
     class IComponentProvider
     {
@@ -54,4 +52,4 @@ namespace injector
     private:
         std::unique_ptr<InstanceStorage<Derived>> m_Storage;
     };
-} // namespace injector
+} // namespace injector::detail

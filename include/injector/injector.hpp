@@ -1,16 +1,27 @@
 #pragma once
 
-#include <memory>
-#include <vector>
 #include <unordered_map>
 
 #include "errors.hpp"
 #include "traits.hpp"
 #include "type_id.hpp"
-#include "provider.hpp"
+#include "injector/detail/provider.hpp"
 
 namespace injector
 {
+
+    using detail::ConstructorFactory;
+    using detail::FunctionFactory;
+    using detail::ConstantFactory;
+
+    using detail::InstanceStorage;
+    using detail::SingletonInstanceStorage;
+
+    using detail::IComponentProvider;
+    using detail::ComponentProviderBase;
+    using detail::NonCastingComponentProvider;
+    using detail::CastingComponentProvider;
+
     class Injector
     {
     public:
@@ -155,24 +166,6 @@ namespace injector
             if (!contains<Base>())
             {
                 add_singleton<Base, Derived>(fn);
-            }
-        }
-
-        template<class T>
-        void add(const std::shared_ptr<T>& data)
-        {
-            auto factory = std::make_unique<ConstantFactory<T>>(data);
-            auto storage = std::make_unique<InstanceStorage<T>>(std::move(factory));
-
-            add_registration<T>(std::move(storage));
-        }
-
-        template<class T>
-        void try_add(const std::shared_ptr<T>& data)
-        {
-            if (contains<T>())
-            {
-                add<T>(data);
             }
         }
 
